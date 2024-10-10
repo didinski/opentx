@@ -21,7 +21,7 @@ boards = {
         "PCBI6X_INAV": "YES",
         "DFPLAYER": "YES",
     },
-    "I6X_RXASTX_PFET": {
+    "I6X_RXASTXPFET": {
         "HELI": "NO",
         "PCBI6X_ELRS": "YES",
         "PCBI6X_INAV": "YES",
