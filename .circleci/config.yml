@@ -68,7 +68,7 @@ jobs:
 workflows:
   openi6x-release-workflow:
     jobs:
-      - build-rx-as-tx:
+      - build-crsfuninv:
           filters:
             branches:
               only:
