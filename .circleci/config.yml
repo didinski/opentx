@@ -53,41 +53,47 @@ jobs:
       - store_artifacts:
           path: output
 
- build-RX-AS-TX:
+ build-rx-as-tx:
     docker:
       - image: ajjjjjjjj/opentx-docker-i6x:1.3.0
     steps:
       - checkout
       - run: |
-          python3 ./tools/build-flysky.py -bI6X_RXASTX-tDE $PWD/
+          python3 ./tools/build-flysky.py -I6X_RXASTX_PFET -tALL $PWD/
       - store_artifacts:
           path: output         
 
 workflows:
   openi6x-release-workflow:
     jobs:
-      - build-en:
+      - build-rx-as-tx:
           filters:
             branches:
-              ignore:
+              only:
                 - master
+    
+      #- build-en:
+       #   filters:
+        #    branches:
+         #     ignore:
+          #      - master
       - build-std:
           filters:
             branches:
               only:
                 - master
-      - build-std-dfplayer:
-          filters:
-            branches:
-              only:
-                - master
-      - build-heli:
-          filters:
-            branches:
-              only:
-                - master
-      - build-heli-dfplayer:
-          filters:
-            branches:
-              only:
-                - master
+      #- build-std-dfplayer:
+       #   filters:
+        #    branches:
+         #     only:
+          #      - master
+      #- build-heli:
+       #   filters:
+        ##    branches:
+          #    only:
+           #     - master
+     # - build-heli-dfplayer:
+      #    filters:
+       #     branches:
+        #      only:
+         #       - master
