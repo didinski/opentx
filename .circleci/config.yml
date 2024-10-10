@@ -59,7 +59,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          python3 ./tools/build-flysky.py -I6X_RXASTX_PFET -tALL $PWD/
+          python3 ./tools/build-flysky.py -I6X_RXASTXPFET -tALL $PWD/
       - store_artifacts:
           path: output         
 
