@@ -21,13 +21,17 @@ boards = {
         "PCBI6X_INAV": "YES",
         "DFPLAYER": "YES",
     },
-    "I6X_RXASTXPFET": {
-        "HELI": "NO",
+    "I6X_HELI": {
+        "HELI": "YES",
         "PCBI6X_ELRS": "YES",
-        "PCBI6X_INAV": "YES",
+        "PCBI6X_INAV": "NO",
         "DFPLAYER": "NO",
-        "CRSF_UNINVERTED": "YES",
-        "EXTPWR_INVERT": "YES",
+    },
+    "I6X_HELI_DFPLAYER": {
+        "HELI": "YES",
+        "PCBI6X_ELRS": "YES",
+        "PCBI6X_INAV": "NO",
+        "DFPLAYER": "YES",
     },
     
 }
