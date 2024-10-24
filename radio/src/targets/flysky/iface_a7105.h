@@ -22,7 +22,6 @@
 #define RX_EN            0b00000001
 #define TXRX_OFF         0b00000011
 #define AFHDS2A_NUMFREQ	 16
-#define RADIO_PPM_CENTER 1500
 
 #define AFHDS2A_TXPACKET_SIZE 38
 #define AFHDS2A_RXPACKET_SIZE 37
@@ -79,9 +78,6 @@ extern uint8_t prev_power; // unused power value
 // #define RX_ExtV 3
 // #define RX_Temp 4
 // #define RX_RPM  5
-
-extern uint8_t *packet;
-extern uint8_t *packet_in;
 
 extern volatile bool pendingTelemetryPollFrame;
 
@@ -222,13 +218,13 @@ enum ePhase {
 void A7105_Sleep(void);
 void A7105_Init(void);
 void A7105_AdjustLOBaseFreq(void);
-void A7105_ReadData(uint8_t len);
+void A7105_ReadData(uint8_t * data, uint8_t len);
 uint8_t A7105_ReadReg(uint8_t address);
 void A7105_WriteReg(uint8_t address, uint8_t data);
 void A7105_SetPower();
 void A7105_SetTxRxMode(uint8_t mode);
 void A7105_Strobe(uint8_t address);
-void A7105_WriteData(uint8_t len, uint8_t channel);
+void A7105_WriteData(uint8_t * data, uint8_t len, uint8_t channel);
 void A7105_AntSwitch(void);
 
 #endif

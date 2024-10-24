@@ -176,7 +176,7 @@ void TelemetryItem::setValue(const TelemetrySensor& sensor, int32_t val, uint32_
   } else if (unit == UNIT_DATETIME_SEC) {
     datetime.sec = newVal & 0xFF;
     newVal = 0;
-  } else if (unit == UNIT_RPMS) {
+  } else if (sensor.unit == UNIT_RPMS) {
     if (sensor.custom.ratio != 0) {
       newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
     }

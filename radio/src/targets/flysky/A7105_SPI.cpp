@@ -25,17 +25,12 @@ volatile uint8_t RadioState;
 uint8_t protocol_flags=0;
 uint8_t prev_power=0xFD; // unused power value
 
-// reuse telemetryRxBuffer for native AFHDS2A support
-uint8_t *packet_in = &telemetryRxBuffer[0]; // separated to prevent overwrite
-uint8_t *packet = &telemetryRxBuffer[64];
-
 //Protocol variables
 ID_t ID;
 uint8_t  packet_count = 0;
 uint8_t  bind_phase;
 uint8_t  hopping_frequency[AFHDS2A_NUMFREQ];
 uint8_t  hopping_frequency_no;
-uint8_t option;   // option value should be between 0 and 70 which gives a value between 50 and 400Hz
 
 
 /******************************************************************************/
@@ -125,13 +120,13 @@ void A7105_Strobe(uint8_t address) {
   A7105_CSN_on;
 }
 
-void A7105_WriteData(uint8_t len, uint8_t channel) {
+void A7105_WriteData(uint8_t * data, uint8_t len, uint8_t channel) {
 	uint8_t i;
 	A7105_CSN_off;
 	SPI_Write(A7105_RST_WRPTR);
 	SPI_Write(A7105_05_FIFO_DATA);
 	for (i = 0; i < len; i++)
-		SPI_Write(packet[i]);
+		SPI_Write(data[i]);
 	A7105_CSN_on;
 	// if(protocol!=PROTO_WFLY2)
 	// {
@@ -145,13 +140,13 @@ void A7105_WriteData(uint8_t len, uint8_t channel) {
 	// }
 }
 
-void A7105_ReadData(uint8_t len) {
+void A7105_ReadData(uint8_t * data, uint8_t len) {
 	uint8_t i;
 	A7105_Strobe(A7105_RST_RDPTR);
 	A7105_CSN_off;
 	SPI_Write(0x40 | A7105_05_FIFO_DATA);	//bit 6 =1 for reading
 	for (i=0;i<len;i++)
-		packet_in[i]=SPI_SDI_Read();
+		data[i]=SPI_SDI_Read();
 	A7105_CSN_on;
 }
 

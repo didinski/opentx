@@ -68,6 +68,7 @@ common_options = {
     "DISABLE_COMPANION": "YES",
     "PPM_UNIT": "PERCENT_PREC1",
     "PCBI6X_USB_VBUS": "NO",
+    "PCBI6X_USB_MSD": "YES",
 }
 
 
