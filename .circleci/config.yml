@@ -29,7 +29,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          python3 ./tools/build-flysky.py -bI6X_CRSFUNIN_PFET -tALL $PWD/
+          python3 ./tools/build-flysky.py -bI6X_CRSFUNIN_PFET -tDE $PWD/
       - store_artifacts:
           path: output        
 
@@ -79,11 +79,11 @@ workflows:
         #    branches:
          #     ignore:
           #      - master
-      - build-std:
-          filters:
-            branches:
-              only:
-                - master
+      #- build-std:
+          #filters:
+            #branches:
+              #only:
+                #- master
       #- build-std-dfplayer:
        #   filters:
         #    branches:
