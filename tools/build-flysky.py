@@ -21,6 +21,14 @@ boards = {
         "PCBI6X_INAV": "YES",
         "DFPLAYER": "YES",
     },
+    "I6X_CRSFUNIN_PFET": {
+        "HELI": "NO",
+        "PCBI6X_ELRS": "YES",
+        "PCBI6X_INAV": "YES",
+        "DFPLAYER": "NO",
+        "EXTPWR_INVERT": "YES",
+        "CRSF_UNINVERTED": "YES",
+    },
     "I6X_HELI": {
         "HELI": "YES",
         "PCBI6X_ELRS": "YES",
@@ -33,6 +41,7 @@ boards = {
         "PCBI6X_INAV": "NO",
         "DFPLAYER": "YES",
     },
+    
 }
 
 translations = [
