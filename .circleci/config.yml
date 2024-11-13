@@ -22,6 +22,16 @@ jobs:
           python3 ./tools/build-flysky.py -bI6X_DFPLAYER -tALL $PWD/
       - store_artifacts:
           path: output
+          
+  build-crsfuninv:
+    docker:
+      - image: ajjjjjjjj/opentx-docker-i6x:1.3.0
+    steps:
+      - checkout
+      - run: |
+          python3 ./tools/build-flysky.py -bI6X_CRSFUNIN_PFET -tDE $PWD/
+      - store_artifacts:
+          path: output        
 
   build-heli:
     docker:
@@ -53,36 +63,39 @@ jobs:
       - store_artifacts:
           path: output
 
+  
+
 workflows:
   openi6x-release-workflow:
     jobs:
-      - build-en:
-          filters:
-            branches:
-              ignore:
-                - master
-                - /.*-maintenance/
-      - build-std:
+      - build-crsfuninv:
           filters:
             branches:
               only:
-                - master
-                - /.*-maintenance/
-      - build-std-dfplayer:
-          filters:
-            branches:
-              only:
-                - master
-                - /.*-maintenance/
-      - build-heli:
-          filters:
-            branches:
-              only:
-                - master
-                - /.*-maintenance/
-      - build-heli-dfplayer:
-          filters:
-            branches:
-              only:
-                - master
-                - /.*-maintenance/
+                - custom
+    
+      #- build-en:
+       #   filters:
+        #    branches:
+         #     ignore:
+          #      - master
+      #- build-std:
+          #filters:
+            #branches:
+              #only:
+                #- master
+      #- build-std-dfplayer:
+       #   filters:
+        #    branches:
+         #     only:
+          #      - master
+      #- build-heli:
+       #   filters:
+        ##    branches:
+          #    only:
+           #     - master
+     # - build-heli-dfplayer:
+      #    filters:
+       #     branches:
+        #      only:
+         #       - master
