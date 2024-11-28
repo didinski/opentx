@@ -453,6 +453,11 @@ PACK(struct ModuleData {
     NOBACKUP(struct {
       uint16_t servoFreq; // 50 - 400
     } afhds2a);
+    NOBACKUP(struct {
+      int16_t crsfArmingTrigger:10;
+      int16_t crsfArmingMode:1;
+      int16_t spare1:5;
+    } crsf);
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -575,15 +580,6 @@ PACK(struct CustomScreenData {
 #define MODELDATA_EXTRA                            \
   NOBACKUP(uint8_t spare : 3);                     \
   NOBACKUP(uint8_t trainerMode : 3);               \
-  uint8_t potsWarnMode : 2;                        \
-  ModuleData moduleData[NUM_MODULES + 1];          \
-  char inputNames[MAX_INPUTS][LEN_INPUT_NAME];     \
-  uint8_t potsWarnEnabled;                         \
-  int8_t potsWarnPosition[NUM_POTS + NUM_SLIDERS]; \
-  uint8_t rxBattAlarms[2];
-#elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA                            \
-  uint8_t spare : 6;                               \
   uint8_t potsWarnMode : 2;                        \
   ModuleData moduleData[NUM_MODULES + 1];          \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME];     \
@@ -725,21 +721,6 @@ PACK(struct TrainerData {
   char anaNames[NUM_STICKS + NUM_POTS + NUM_SLIDERS][LEN_ANA_NAME]; \
   uint8_t receiverId[16][4]; /* AFHDS2A RxNum */                    \
   BLUETOOTH_FIELDS
-#elif defined(PCBSKY9X)
-#define EXTRA_GENERAL_FIELDS                                        \
-  EXTRA_GENERAL_FIELDS_ARM                                          \
-  int8_t txCurrentCalibration;                                      \
-  int8_t temperatureWarn;                                           \
-  uint8_t mAhWarn;                                                  \
-  uint16_t mAhUsed;                                                 \
-  int8_t temperatureCalib;                                          \
-  uint8_t optrexDisplay;                                            \
-  uint8_t sticksGain;                                               \
-  uint8_t rotarySteps;                                              \
-  char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME];                  \
-  char anaNames[NUM_STICKS + NUM_POTS + NUM_SLIDERS][LEN_ANA_NAME]; \
-                                                                    \
-#define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
 #endif
 
 #if defined(PCBHORUS)
@@ -879,19 +860,6 @@ static inline void check_struct() {
   CHKSIZE(CurveData, 4);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
-#elif defined(PCBSKY9X)
-  CHKSIZE(MixData, 20);
-  CHKSIZE(ExpoData, 17);
-  CHKSIZE(LimitData, 11);
-  CHKSIZE(CustomFunctionData, 9);
-  CHKSIZE(FlightModeData, 38);
-  CHKSIZE(TimerData, 11);
-  CHKSIZE(SwashRingData, 8);
-  CHKSIZE(FrSkyBarData, 5);
-  CHKSIZE(FrSkyLineData, 2);
-  CHKSIZE(FrSkyTelemetryData, 88);
-  CHKSIZE(ModelHeader, 12);
-  CHKTYPE(CurveData, 4);
 #elif defined(PCBI6X)
   CHKSIZE(LimitData, 11);
   CHKSIZE(MixData, 20);
@@ -951,9 +919,6 @@ static inline void check_struct() {
 #elif defined(PCBX9D)
   CHKSIZE(RadioData, 872);
   CHKSIZE(ModelData, 6507);
-#elif defined(PCBSKY9X)
-  CHKSIZE(RadioData, 727);
-  CHKSIZE(ModelData, 5188);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 847);
   CHKSIZE(ModelData, 9380);

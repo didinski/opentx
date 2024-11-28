@@ -75,7 +75,7 @@
 #endif
 
 #define HAS_ENABLE_PARAM(func) ((func) < FUNC_FIRST_WITHOUT_ENABLE || (func == FUNC_BACKLIGHT))
-#define HAS_REPEAT_PARAM(func) (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func)|| func == FUNC_SET_SCREEN)
+#define HAS_REPEAT_PARAM(func) (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func))
 
 #define CFN_EMPTY(p) (!(p)->swtch)
 #define CFN_SWITCH(p) ((p)->swtch)
@@ -315,11 +315,7 @@ enum SwashType {
 
 #define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
 
-#if !defined(PCBSKY9X)
 #define TIMER_COUNTDOWN_START(x) (g_model.timers[x].countdownStart > 0 ? 5 : 10 - g_model.timers[x].countdownStart * 10)
-#else
-#define TIMER_COUNTDOWN_START(x) 10
-#endif
 
 enum ChannelsProtocols {
   PROTOCOL_CHANNELS_UNINITIALIZED,

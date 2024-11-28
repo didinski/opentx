@@ -50,7 +50,7 @@ void menuStatisticsView(event_t event)
 #if !defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU): // historical
 #endif
-#if !defined(PCBSKY9X) && !defined(PCBI6X)
+#if !defined(PCBI6X)
     case EVT_KEY_LONG(KEY_ENTER):
 #endif
       g_eeGeneral.globalTimer = 0;
@@ -120,10 +120,6 @@ void menuStatisticsDebug(event_t event)
 
   switch (event) {
     case EVT_KEY_LONG(KEY_ENTER):
-#if defined(PCBSKY9X)
-      g_eeGeneral.mAhUsed = 0;
-      Current_used = 0;
-#endif
       g_eeGeneral.globalTimer = 0;
       sessionTimer = 0;
       storageDirty(EE_GENERAL);
@@ -163,15 +159,6 @@ void menuStatisticsDebug(event_t event)
 //   lcdDrawNumber(MENU_DEBUG_COL1_OFS + FW, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
 #endif
 
-#if defined(PCBSKY9X)
-  if ((ResetReason&RSTC_SR_RSTTYP) == (2<<8)) {
-    lcdDrawText(LCD_W-8*FW, 0*FH, "WATCHDOG");
-  }
-  else if (globalData.unexpectedShutdown) {
-    lcdDrawText(LCD_W-13*FW, 0*FH, "UNEXP.SHTDOWN");
-  }
-#endif
-
 #if defined(TX_CAPACITY_MEASUREMENT)
   // current
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
@@ -182,13 +169,6 @@ void menuStatisticsDebug(event_t event)
   // consumption
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_MAH, STR_CPU_MAH);
   drawValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MAH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
-#endif
-
-#if defined(PCBSKY9X)
-  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_CPU_TEMP, STR_CPU_TEMP);
-  drawValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CPU_TEMP, getTemperature(), UNIT_TEMPERATURE, LEFT);
-  lcdDrawChar(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CPU_TEMP, '>');
-  drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CPU_TEMP, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
 #endif
 
 #if defined(COPROCESSOR)

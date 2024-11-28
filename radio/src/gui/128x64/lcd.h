@@ -98,11 +98,6 @@ extern coord_t lcdNextPos;
 #define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)
 #define ASSERT_IN_DISPLAY(p)           assert((p) >= displayBuf && (p) < DISPLAY_END)
 
-#if defined(PCBSKY9X)
-  extern volatile uint8_t lcdLock ;
-  extern volatile uint32_t lcdInputs ;
-#endif
-
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c);
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags);
 void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags);

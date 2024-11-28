@@ -169,9 +169,6 @@ void menuRadioSdManager(event_t _event)
 #if defined(SDCARD)
     logsClose();
 #endif
-#if defined(PCBSKY9X)
-    Card_state = SD_ST_DATA;
-#endif
     audioQueue.stopSD();
     if(sdCardFormat()) {
       f_chdir("/");

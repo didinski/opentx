@@ -50,9 +50,6 @@ const char STR_OPEN9X[]  =
     ISTR(RETA123)
     ISTR(VPROTOS)
     ISTR(POSNEG)
-#if defined(PCBSKY9X) && defined(REVX)
-    ISTR(VOUTPUT_TYPE)
-#endif
     ISTR(VBLMODE)
     ISTR(VCURVEFUNC)
     ISTR(VMLTPX)
@@ -113,6 +110,7 @@ const char STR_OPEN9X[]  =
 #endif
     ISTR(VOLTSRC)
     ISTR(CURVE_TYPES)
+    ISTR(CRSF_ARMING_MODES)
     ISTR(VSENSORTYPES)
     ISTR(VFORMULAS)
     ISTR(VPREC)
@@ -149,9 +147,6 @@ const char STR_TTRACE[]  = TR_TTRACE;
 const char STR_TTRIM[]  = TR_TTRIM;
 const char STR_BEEPCTR[]  = TR_BEEPCTR;
 const char STR_USE_GLOBAL_FUNCS[]  = TR_USE_GLOBAL_FUNCS;
-#if defined(PCBSKY9X) && defined(REVX)
-  const char STR_OUTPUT_TYPE[]  = TR_OUTPUT_TYPE;
-#endif
 const char STR_PROTO[]  = TR_PROTO;
 const char STR_PPMFRAME[]  = TR_PPMFRAME;
 const char STR_REFRESHRATE[]  = TR_REFRESHRATE;
@@ -540,6 +535,7 @@ const char STR_TEMP_CALIB[]  = TR_TEMP_CALIB;
 const char STR_TIME[]  = TR_TIME;
 const char STR_MAXBAUDRATE[]  = TR_MAXBAUDRATE;
 const char STR_BAUDRATE[]  = TR_BAUDRATE;
+const char STR_CRSF_ARMING_MODE[] = TR_CRSF_ARMING_MODE;
 const char STR_SD_INFO_TITLE[]  = TR_SD_INFO_TITLE;
 const char STR_SD_TYPE[]  = TR_SD_TYPE;
 const char STR_SD_SPEED[]  = TR_SD_SPEED;

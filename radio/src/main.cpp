@@ -29,7 +29,7 @@ uint8_t mainRequestFlags = 0;
 #if defined(STM32)
 void onUSBConnectMenu(const char *result)
 {
-#if !defined(PCBI6X) || defined(PCBI6X_USB_MSD)
+#if defined(USB_MSD)
   if (result == STR_USB_MASS_STORAGE) {
     setSelectedUsbMode(USB_MASS_STORAGE_MODE);
   }
@@ -38,7 +38,7 @@ void onUSBConnectMenu(const char *result)
   if (result == STR_USB_JOYSTICK) {
     setSelectedUsbMode(USB_JOYSTICK_MODE);
   }
-#if !defined(PCBI6X)
+#if defined(USB_SERIAL)
   else if (result == STR_USB_SERIAL) {
     setSelectedUsbMode(USB_SERIAL_MODE);
   }
@@ -53,12 +53,12 @@ void handleUsbConnection()
     if (getSelectedUsbMode() == USB_UNSELECTED_MODE) {
       if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
         POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
-  #if !defined(PCBI6X) || defined(PCBI6X_USB_MSD)
+  #if defined(USB_MSD)
         POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
   #endif
-  #if defined(DEBUG) && !defined(PCBI6X)
+#if defined(USB_SERIAL)
         POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
-  #endif
+#endif
         POPUP_MENU_START(onUSBConnectMenu);
       }
       else {
@@ -66,7 +66,7 @@ void handleUsbConnection()
       }
     }
     else {
-      #if !defined(PCBI6X) || defined(PCBI6X_USB_MSD)
+      #if !defined(PCBI6X) || defined(USB_MSD)
       if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
         #if defined(PCBI6X_ELRS)
         extern void elrsStop();
@@ -82,7 +82,7 @@ void handleUsbConnection()
 
   if (usbStarted() && !usbPlugged()) {
     usbStop();
-    #if !defined(PCBI6X) || defined(PCBI6X_USB_MSD)
+    #if !defined(PCBI6X) || defined(USB_MSD)
     if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
       opentxResume();
     }
@@ -134,14 +134,6 @@ void checkBatteryAlarms()
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
   }
-#if defined(PCBSKY9X)
-  else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    AUDIO_TX_TEMP_HIGH();
-  }
-  else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) { // TODO move calculation into board file
-    AUDIO_TX_MAH_HIGH();
-  }
-#endif
 }
 
 void checkBattery()
@@ -425,9 +417,6 @@ void perMain()
 {
   DEBUG_TIMER_START(debugTimerPerMain1);
 
-#if defined(PCBSKY9X) && !defined(REVA)
-  calcConsumption();
-#endif
 #if !defined(PCBI6X)
   checkSpeakerVolume();
 #endif
@@ -476,7 +465,7 @@ void perMain()
   }
 #endif
 
-#if defined(STM32)
+#if defined(STM32) && defined(USB_MSD)
   if (usbPlugged() && getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
     // disable access to menus
     lcdClear();

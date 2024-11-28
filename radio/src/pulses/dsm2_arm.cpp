@@ -23,10 +23,6 @@
 #define DSM2_SEND_BIND                     (1 << 7)
 #define DSM2_SEND_RANGECHECK               (1 << 5)
 
-#if defined(PCBSKY9X)
-uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
-#endif
-
 // DSM2 control bits
 #define DSM2_CHANS           6
 #define FRANCE_BIT           0x10

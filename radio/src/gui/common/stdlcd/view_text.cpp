@@ -157,7 +157,7 @@ void menuTextView(event_t event)
   }
 
   for (int i=0; i<LCD_LINES-1; i++) {
-    lcdDrawText(0, i*FH+FH+1, reusableBuffer.viewText.lines[i], FIXEDWIDTH);
+    lcdDrawTextAlignedLeft(i*FH+FH+1, reusableBuffer.viewText.lines[i], FIXEDWIDTH);
   }
 
   char * title = reusableBuffer.viewText.filename;

@@ -287,14 +287,7 @@ bool eeLoadGeneral()
   if (g_eeGeneral.version != EEPROM_VER)
   {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
-#if defined(PCBSKY9X)
-    if (!eeConvert())
-    {
-      return false;
-    }
-#else
     return false;
-#endif
   }
   return true;
 }

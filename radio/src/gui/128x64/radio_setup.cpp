@@ -431,14 +431,6 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBSKY9X)
-      case ITEM_SETUP_TEMPERATURE_WARNING:
-        lcdDrawTextAlignedLeft(y, STR_TEMPWARNING);
-        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
-        break;
-#endif
-
       case ITEM_SETUP_INACTIVITY_ALARM:
         lcdDrawTextAlignedLeft(y, STR_INACTIVITYALARM);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.inactivityTimer, attr|LEFT);

@@ -37,13 +37,8 @@
   #define SWITCH_SIMU(a, b)  (b)
 #endif
 
-#if defined(PCBSKY9X)
-  #define IS_PCBSKY9X        true
-  #define CASE_PCBSKY9X(x)   x,
-#else
   #define IS_PCBSKY9X        false
   #define CASE_PCBSKY9X(x)
-#endif
 
 #if defined(STM32)
   #define CASE_STM32(x)     x,
@@ -165,12 +160,7 @@
   #define CASE_PCBX9E(x)
 #endif
 
-#if defined(PCBSKY9X) && !defined(AR9X) && !defined(REVA)
-  #define TX_CAPACITY_MEASUREMENT
-  #define CASE_CAPACITY(x) x,
-#else
   #define CASE_CAPACITY(x)
-#endif
 
 #if ROTARY_ENCODERS > 0
   #define ROTARY_ENCODER_NAVIGATION
@@ -554,9 +544,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
   void incRotaryEncoder(uint8_t idx, int8_t inc);
 #endif
 
-#if   defined(PCBSKY9X)
-  #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
-#elif defined(PCBHORUS)
+#if defined(PCBHORUS)
   #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
@@ -617,8 +605,6 @@ extern uint16_t maxMixerDuration;
   uint16_t getTmr16KHz();
 #elif defined(STM32)
   static inline uint16_t getTmr2MHz() { return TIMER_2MHz_TIMER->CNT; }
-#elif defined(PCBSKY9X)
-  static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
   uint16_t getTmr16KHz();
 #endif
@@ -1003,10 +989,6 @@ enum AUDIO_SOUNDS {
   AU_SERVO_KO,
   AU_RX_OVERLOAD,
   AU_MODEL_STILL_POWERED,
-#if defined(PCBSKY9X)
-  AU_TX_MAH_HIGH,
-  AU_TX_TEMP_HIGH,
-#endif
   AU_ERROR,
   AU_WARNING1,
   AU_WARNING2,

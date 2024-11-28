@@ -55,6 +55,8 @@ const CrossfireSensor crossfireSensors[] = {
     {0, 0, "UNKNOWN", UNIT_RAW, 0},
 };
 
+CrossfireModuleStatus crossfireModuleStatus = {0};
+
 const CrossfireSensor &getCrossfireSensor(uint8_t id, uint8_t subId) {
   if (id == LINK_ID)
     return crossfireSensors[RX_RSSI1_INDEX + subId];
@@ -247,6 +249,28 @@ void processCrossfireTelemetryFrame() {
         }
       }
 #else
+      if (id == DEVICE_INFO_ID && telemetryRxBuffer[4] == MODULE_ADDRESS) {
+        uint8_t nameSize = telemetryRxBuffer[1] - 18;
+        // strncpy((char *)&crossfireModuleStatus.name, (const char *)&telemetryRxBuffer[5], CRSF_NAME_MAXSIZE);
+        // crossfireModuleStatus.name[CRSF_NAME_MAXSIZE -1] = 0; // For some reason, GH din't like strlcpy
+        if (strncmp((const char *) &telemetryRxBuffer[5 + nameSize], "ELRS", 4) == 0)
+          crossfireModuleStatus.isELRS = true;
+        crossfireModuleStatus.major = telemetryRxBuffer[14 + nameSize];
+        crossfireModuleStatus.minor = telemetryRxBuffer[15 + nameSize];
+        // crossfireModuleStatus.revision = telemetryRxBuffer[16 + nameSize];
+        crossfireModuleStatus.queryCompleted = true;
+      }
+
+      ModuleData *md = &g_model.moduleData[EXTERNAL_MODULE];
+
+      if (!CRSF_ELRS_MIN_VER(4, 0) &&
+          (md->crsf.crsfArmingMode != ARMING_MODE_CH5 || md->crsf.crsfArmingMode != SWSRC_NONE)) {
+        md->crsf.crsfArmingMode = ARMING_MODE_CH5;
+        md->crsf.crsfArmingTrigger = SWSRC_NONE;
+
+        storageDirty(EE_MODEL);
+      }
+
       // <Device address 0><Frame length 1><Type 2><Payload 3><CRC>
       // destination address and CRC are skipped
       runCrossfireTelemetryCallback(telemetryRxBuffer[2], telemetryRxBuffer + 2, telemetryRxBuffer[1] - 1);
@@ -297,6 +321,12 @@ void crossfireTelemetrySeekStart(uint8_t *rxBuffer, uint8_t &rxBufferCount)
 
 void processCrossfireTelemetryData(uint8_t data) {
 
+#if !defined(DEBUG) && defined(USB_SERIAL)
+  if (getSelectedUsbMode() == USB_SERIAL_MODE) {
+    usbSerialPutc(data);
+  }
+#endif
+
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
     auxSerialPutc(data);
@@ -304,12 +334,12 @@ void processCrossfireTelemetryData(uint8_t data) {
 #endif
 
   if (telemetryRxBufferCount == 0 && data != RADIO_ADDRESS) {
-    TRACE("[XF] address 0x%02X error", data);
+    TRACE("[XF] addr 0x%02X err", data);
     return;
   }
 
   if (telemetryRxBufferCount == 1 && !crossfireLenIsSane(data)) {
-    TRACE("[XF] length 0x%02X error", data);
+    TRACE("[XF] len 0x%02X err", data);
     telemetryRxBufferCount = 0;
     return;
   }
@@ -317,7 +347,7 @@ void processCrossfireTelemetryData(uint8_t data) {
   if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
     telemetryRxBuffer[telemetryRxBufferCount++] = data;
   } else {
-    TRACE("[XF] array size %d error", telemetryRxBufferCount);
+    TRACE("[XF] arr size %d err", telemetryRxBufferCount);
     telemetryRxBufferCount = 0;
   }
 
@@ -328,7 +358,7 @@ void processCrossfireTelemetryData(uint8_t data) {
       telemetryRxBufferCount = 0;
     }
     else {
-      TRACE("[XF] CRC error ");
+      TRACE("[XF] CRC err");
       crossfireTelemetrySeekStart(telemetryRxBuffer, telemetryRxBufferCount); // adjusts telemetryRxBufferCount
     }
   }

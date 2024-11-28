@@ -4,7 +4,7 @@ set(LUA_SCRIPT_LOAD_MODE "" CACHE STRING "Script loading mode and compilation fl
 option(LUA_COMPILER "Pre-compile and save Lua scripts" OFF)
 option(LUA_ALLOCATOR_TRACER "Trace Lua memory (de)allocations to debug port (also needs DEBUG=YES NANO=NO)" OFF)
 
-option(USB_SERIAL "Enable USB serial (CDC)" OFF)
+option(USB_SERIAL "Enable USB serial (CDC)" OFF) # 1.1kB
 set(ARCH ARM)
 
 if(NOT CPU_TYPE STREQUAL STM32F0)
@@ -86,13 +86,13 @@ endif()
 if(DEBUG OR CLI OR USB_SERIAL)
   set(STM32USB_SRC
     ${STM32USB_SRC}
-    # STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+    STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
   )
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
-    # ../common/arm/stm32/usbd_cdc.cpp
+    ../common/arm/stm32/usbd_cdc.cpp
   )
-  #add_definitions(-DUSB_SERIAL)
+  add_definitions(-DUSB_SERIAL)
 endif()
 set(STM32USB_SRC
   ${STM32USB_SRC}

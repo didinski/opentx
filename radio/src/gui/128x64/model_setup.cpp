@@ -89,6 +89,10 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
+  #if defined(CROSSFIRE)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_ARMING_MODE,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_ARMING_TRIGGER,
+  #endif
 #if defined(MULTIMODULE)
   ITEM_MODEL_EXTERNAL_MODULE_SUBTYPE,
   ITEM_MODEL_EXTERNAL_MODULE_STATUS,
@@ -96,21 +100,13 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_EXTERNAL_MODULE_BIND,
-#if defined(PCBSKY9X) && defined(REVX)
-  ITEM_MODEL_EXTERNAL_MODULE_OUTPUT_TYPE,
-#endif
   ITEM_MODEL_EXTERNAL_MODULE_OPTIONS,
 #if defined(MULTIMODULE)
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_POWER,
-#if defined(PCBSKY9X) && !defined(REVA)
-  ITEM_MODEL_EXTRA_MODULE_LABEL,
-  ITEM_MODEL_EXTRA_MODULE_CHANNELS,
-  ITEM_MODEL_EXTRA_MODULE_BIND,
-#endif
   ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
-#if defined(PCBTARANIS) || defined(PCBI6X)
+#if defined(SBUS_TRAINER)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
 #endif
@@ -132,14 +128,18 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS     7*FW-2
 
-#if defined(PCBTARANIS) || defined(PCBI6X)
+#if defined(SBUS_TRAINER)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
-#elif defined(PCBSKY9X) && !defined(REVA)
-  #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
-// #elif defined(PCBI6X)
-//   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
 #else
-  #define CURRENT_MODULE_EDITED(k)       (EXTERNAL_MODULE)
+  #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
+#endif
+
+#if defined(CROSSFIRE)
+#define IF_MODULE_ARMED(module, xxx) (CRSF_ELRS_MIN_VER(4, 0) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#define IF_MODULE_ARMED_TRIGGER(module, xxx) ((CRSF_ELRS_MIN_VER(4, 0) && g_model.moduleData[EXTERNAL_MODULE].crsf.crsfArmingMode) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#else
+#define IF_MODULE_ARMED(module, xxx)
+#define IF_MODULE_ARMED_TRIGGER(module, xxx)
 #endif
 
 #if defined(PCBXLITE)
@@ -157,11 +157,8 @@ enum MenuModelSetupItems {
   #define INTERNAL_MODULE_CHANNELS_ROWS  IF_INTERNAL_MODULE_ON(1)
   #define EXTERNAL_MODULE_BIND_ROWS()    ((isModuleXJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) || isModuleSBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (isModulePPM(EXTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)2 : (isModuleCrossfire(EXTERNAL_MODULE)) ? (uint8_t)0 : HIDDEN_ROW
 
-#if defined(PCBSKY9X) && defined(REVX)
-  #define OUTPUT_TYPE_ROWS()             (isModulePPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW) ,
-#else
   #define OUTPUT_TYPE_ROWS()
-#endif
+
   #define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
 
   #define EXTERNAL_MODULE_MODE_ROWS      (isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE) || isModuleCrossfire(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
@@ -171,11 +168,7 @@ enum MenuModelSetupItems {
   #define POT_WARN_ITEMS()               ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
   #define TIMER_ROWS(x)                  2, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
   #define TIMERS_ROWS                    TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
-#if defined(PCBSKY9X) && !defined(REVA)
-  #define EXTRA_MODULE_ROWS              LABEL(ExtraModule), 1, 2,
-#else
   #define EXTRA_MODULE_ROWS
-#endif
 
 #if defined(PCBX7)
 #define ANTENNA_ROW
@@ -339,6 +332,8 @@ void menuModelSetup(event_t event)
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
+    IF_MODULE_ARMED(EXTERNAL_MODULE, 0),           /* Arming Mode */
+    IF_MODULE_ARMED_TRIGGER(EXTERNAL_MODULE, 0),   /* Arming TRIGGER */
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
     MULTIMODULE_STATUS_ROWS
     EXTERNAL_MODULE_CHANNELS_ROWS,
@@ -821,12 +816,6 @@ void menuModelSetup(event_t event)
   
 #endif
 
-#if defined(PCBSKY9X)
-      case ITEM_MODEL_EXTRA_MODULE_LABEL:
-        lcdDrawTextAlignedLeft(y, "RF Port 2 (PPM)");
-        break;
-#endif
-
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
         lcdDrawTextAlignedLeft(y, TR_EXTERNALRF);
         break;
@@ -952,7 +941,22 @@ void menuModelSetup(event_t event)
       break;
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBI6X)
+#if defined(CROSSFIRE)
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_ARMING_MODE:
+        g_model.moduleData[EXTERNAL_MODULE].crsf.crsfArmingMode =
+          editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_CRSF_ARMING_MODE, STR_CRSF_ARMING_MODES,
+          g_model.moduleData[EXTERNAL_MODULE].crsf.crsfArmingMode, ARMING_MODE_FIRST, ARMING_MODE_LAST, attr, event/*, INDENT_WIDTH*/);
+        break;
+
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_ARMING_TRIGGER:
+        lcdDrawText(INDENT_WIDTH, y, STR_SWITCH);
+        drawSwitch(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[EXTERNAL_MODULE].crsf.crsfArmingTrigger, attr);
+        if (attr)
+          CHECK_INCDEC_SWITCH(event, g_model.moduleData[EXTERNAL_MODULE].crsf.crsfArmingTrigger, SWSRC_FIRST, SWSRC_LAST, EE_MODEL, isSwitchAvailableForArming);
+        break;
+#endif
+
+#if defined(PCBTARANIS) || defined(SBUS_TRAINER)
       case ITEM_MODEL_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
         break;

@@ -452,8 +452,6 @@ void modelDefault(uint8_t id) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-#elif defined(PCBSKY9X)
-  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #elif defined(PCBI6X)
   g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_AFHDS2A_SPI;
   g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
@@ -745,12 +743,6 @@ void doSplash() {
     resetBacklightTimeout();
     drawSplash();
 
-#if defined(PCBSKY9X)
-    tmr10ms_t curTime = get_tmr10ms() + 10;
-    uint8_t contrast = 10;
-    lcdSetRefVolt(contrast);
-#endif
-
     getADC();  // init ADC array
 
     inputsMoved();
@@ -786,16 +778,6 @@ void doSplash() {
       if (!secondSplash && get_tmr10ms() >= tgtime - 200) {
         secondSplash = true;
         drawSecondSplash();
-      }
-#endif
-
-#if defined(PCBSKY9X)
-      if (curTime < get_tmr10ms()) {
-        curTime += 10;
-        if (contrast < g_eeGeneral.contrast) {
-          contrast += 1;
-          lcdSetRefVolt(contrast);
-        }
       }
 #endif
 
@@ -1347,12 +1329,6 @@ void doMixerCalculations() {
   getSwitchesPosition(!s_mixer_first_run_done);
   DEBUG_TIMER_STOP(debugTimerGetSwitches);
 
-#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
-  Current_analogue = (Current_analogue * 31 + s_anaFilt[8]) >> 5;
-  if (Current_analogue > Current_max)
-    Current_max = Current_analogue;
-#endif
-
   DEBUG_TIMER_START(debugTimerEvalMixes);
   evalMixes(tick10ms);
   DEBUG_TIMER_STOP(debugTimerEvalMixes);
@@ -1423,8 +1399,9 @@ void doMixerPeriodicUpdates()
       s_cnt_1s += 1;
 
       logicalSwitchesTimerTick();
+#if defined(SBUS_TRAINER)
       checkTrainerSignalWarning();
-
+#endif
       if (s_cnt_1s >= 10) {  // 1sec
         s_cnt_1s -= 10;
         sessionTimer += 1;
@@ -1508,12 +1485,6 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS) {
   trace_event(trace_start, 0x12345678);
 #endif
 
-#if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
-  for (int i = 0; i < 500 && !Card_initialized; i++) {
-    RTOS_WAIT_MS(2);  // 2ms
-  }
-#endif
-
 #if defined(NIGHTLY_BUILD_WARNING)
   ALERT(STR_NIGHTLY_WARNING, TR_NIGHTLY_NOTSAFE, AU_ERROR);
 #endif
@@ -1578,13 +1549,6 @@ void saveAllData() {
     g_eeGeneral.globalTimer += sessionTimer;
     sessionTimer = 0;
   }
-
-#if defined(PCBSKY9X)
-  uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration) / 8192 / 36;
-  if (g_eeGeneral.mAhUsed != mAhUsed) {
-    g_eeGeneral.mAhUsed = mAhUsed;
-  }
-#endif
 
   g_eeGeneral.unexpectedShutdown = 0;
   storageDirty(EE_GENERAL);
@@ -1844,11 +1808,6 @@ void opentxInit()
 #endif
 
   BACKLIGHT_ENABLE();
-
-#if defined(PCBSKY9X)
-  // Set ADC gains here
-  setSticksGain(g_eeGeneral.sticksGain);
-#endif
 
 #if defined(PCBSKY9X) && defined(BLUETOOTH)
   btInit();

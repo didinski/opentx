@@ -56,7 +56,8 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
 
   USART_DeInit(TELEMETRY_USART);
 
-  USART_OverSampling8Cmd(TELEMETRY_USART, ENABLE);
+  // OverSampling + IDLE
+  TELEMETRY_USART->CR1 |= ( USART_CR1_OVER8 | USART_CR1_IDLEIE );
 
   GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_TX, TELEMETRY_GPIO_AF);
 
@@ -67,8 +68,6 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
-
-  TELEMETRY_USART->CR1 |= USART_CR1_IDLEIE;
 
   // Level inversion
 #if !defined(CRSF_UNINVERTED)
@@ -163,8 +162,8 @@ extern "C" void TELEMETRY_USART_IRQHandler(void) {
   DEBUG_INTERRUPT(INT_TELEM_USART);
   uint32_t status = TELEMETRY_USART->ISR;
 
-  // TX
-  if ((status & USART_FLAG_TC) && (TELEMETRY_USART->CR1 & USART_CR1_TCIE)) {
+  // TX, transfer complete
+  if ((status & USART_ISR_TC) && (TELEMETRY_USART->CR1 & USART_CR1_TCIE)) {
     TELEMETRY_USART->CR1 &= ~USART_CR1_TCIE;
     telemetryPortSetDirectionInput();
     while (status & (USART_FLAG_RXNE)) {
@@ -185,16 +184,5 @@ extern "C" void TELEMETRY_USART_IRQHandler(void) {
 
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 uint8_t telemetryGetByte(uint8_t* byte) {
-#if defined(AUX_SERIAL) && !defined(PCBI6X)
-  if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
-    if (auxSerialMode == UART_MODE_TELEMETRY)
-      return auxSerialRxFifo.pop(*byte);
-    else
-      return false;
-  } else {
-    return telemetryDMAFifo.pop(*byte);
-  }
-#else
   return telemetryDMAFifo.pop(*byte);
-#endif
 }

@@ -33,10 +33,6 @@ uint8_t telemetryProtocol = 255;
 
 volatile bool pendingTelemetryPollFrame = false;
 
-#if defined(PCBSKY9X) && defined(REVX)
-uint8_t serialInversion = 0;
-#endif
-
 
 void processTelemetryData(uint8_t data)
 {
@@ -238,7 +234,7 @@ void telemetryInit(uint8_t protocol)
 	  telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
 	  break;
 #endif
-#if (defined(AUX_SERIAL) || defined(PCBSKY9X)) && !defined(PCBI6X)
+#if defined(AUX_SERIAL) && !defined(PCBI6X)
   case PROTOCOL_FRSKY_D_SECONDARY:
 	  telemetryPortInit(0, TELEMETRY_SERIAL_DEFAULT);
 	  auxSerialTelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);

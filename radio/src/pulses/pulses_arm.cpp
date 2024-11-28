@@ -260,9 +260,6 @@ bool setupPulses(uint8_t port) {
 #endif
 
     case PROTOCOL_CHANNELS_PPM:
-#if defined(PCBSKY9X)
-    case PROTOCOL_CHANNELS_NONE:
-#endif
       setupPulsesPPMModule(port);
       mixerSchedulerSetPeriod(port, PPM_PERIOD(port));
       break;
