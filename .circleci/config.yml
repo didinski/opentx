@@ -80,11 +80,11 @@ workflows:
         #    branches:
          #     ignore:
           #      - master
-      #- build-std:
-          #filters:
-            #branches:
-              #only:
-                #- master
+      - build-std:
+          filters:
+            branches:
+              only:
+                - custom2
       #- build-std-dfplayer:
        #   filters:
         #    branches:
