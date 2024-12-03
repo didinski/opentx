@@ -56,10 +56,10 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
 
 #if defined(CRSF_FULLDUPLEX)
   GPIO_InitStructure.GPIO_Pin = TELEMETRY_RX_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(TELEMETRY_RX_GPIO, &GPIO_InitStructure);
   GPIO_PinAFConfig(TELEMETRY_RX_GPIO, TELEMETRY_GPIO_PinSource_RX, TELEMETRY_GPIO_AF);
 #endif
