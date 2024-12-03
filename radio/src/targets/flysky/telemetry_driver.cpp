@@ -108,11 +108,9 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
                                 | DMA_MemoryDataSize_Byte;
 
 #if defined(CRSF_FULLDUPLEX)
-  // Full duplex mode
   TELEMETRY_USART->CR3 |= USART_DMAReq_Rx;
 #else
-  // Half duplex mode
-  TELEMETRY_USART->CR3 |= USART_CR3_HDSEL | USART_DMAReq_Rx;
+  TELEMETRY_USART->CR3 |= USART_CR3_HDSEL /*Half duplex*/ | USART_DMAReq_Rx;
 #endif
 
   USART_Cmd(TELEMETRY_USART, ENABLE);
@@ -120,18 +118,15 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
 }
 
 void telemetryPortSetDirectionOutput() {
-#if !defined(CRSF_FULLDUPLEX)
   // Disable RX
   TELEMETRY_DMA_Channel_RX->CCR &= ~DMA_CCR_EN;
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;
-#endif
 
   // Enable TX
   TELEMETRY_USART->CR1 |= USART_CR1_TE;
 }
 
 void telemetryPortSetDirectionInput() {
-#if !defined(CRSF_FULLDUPLEX)
   // Disable TX
   TELEMETRY_DMA_Channel_TX->CCR &= ~DMA_CCR_EN;
   TELEMETRY_USART->CR1 &= ~USART_CR1_TE;
@@ -139,7 +134,6 @@ void telemetryPortSetDirectionInput() {
   // Enable RX
   TELEMETRY_USART->CR1 |= USART_CR1_RE;
   TELEMETRY_DMA_Channel_RX->CCR |= DMA_CCR_EN;
-#endif
 }
 
 void sportSendBuffer(const uint8_t* buffer, unsigned long count) {
@@ -191,11 +185,11 @@ extern "C" void TELEMETRY_USART_IRQHandler(void) {
     TELEMETRY_USART->CR1 &= ~USART_CR1_TCIE;
 #if !defined(CRSF_FULLDUPLEX)
     telemetryPortSetDirectionInput();
+#endif
     while (status & (USART_FLAG_RXNE)) {
       status = TELEMETRY_USART->RDR;
       status = TELEMETRY_USART->ISR;
     }
-#endif
   }
 
   // RX, handled by DMA
