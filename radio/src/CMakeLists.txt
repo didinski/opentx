@@ -49,7 +49,6 @@ option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
 option(MODULE_R9M_FLEX_FW "Add R9M options for non certified firmwwares" OFF)
-option(CRSF_UNINVERTED "Enable uninverted CRSF" OFF)
 option(EXTPWR_INVERT "Enable inverted pwr enable on PC13" OFF)
 option(CRSF_FULLDUPLEX "Enable Crossfire full duplex mode on PA15 as RX" OFF)
 
@@ -335,10 +334,6 @@ endif(NIGHTLY_BUILD_WARNING)
 
 if(MODULE_R9M_FLEX_FW)
   add_definitions(-DMODULE_R9M_FLEX_FW)
-endif()
-
-if(CRSF_UNINVERTED)
-  add_definitions(-DCRSF_UNINVERTED)
 endif()
 
 if(EXTPWR_INVERT)
