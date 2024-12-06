@@ -119,8 +119,10 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
 
 void telemetryPortSetDirectionOutput() {
   // Disable RX
+#if !defined(CRSF_FULLDUPLEX)
   TELEMETRY_DMA_Channel_RX->CCR &= ~DMA_CCR_EN;
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;
+#endif
 
   // Enable TX
   TELEMETRY_USART->CR1 |= USART_CR1_TE;
@@ -137,9 +139,8 @@ void telemetryPortSetDirectionInput() {
 }
 
 void sportSendBuffer(const uint8_t* buffer, unsigned long count) {
-#if !defined(CRSF_FULLDUPLEX)
+
   telemetryPortSetDirectionOutput();
-#endif
 
   DMA_DeInit(TELEMETRY_DMA_Channel_TX);
 
