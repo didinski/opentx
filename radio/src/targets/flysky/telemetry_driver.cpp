@@ -61,7 +61,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(TELEMETRY_RX_GPIO, &GPIO_InitStructure);
-  GPIO_PinAFConfig(TELEMETRY_RX_GPIO, TELEMETRY_GPIO_PinSource_RX, TELEMETRY_GPIO_RX_AF);
+  GPIO_PinAFConfig(TELEMETRY_RX_GPIO, TELEMETRY_GPIO_PinSource_RX, TELEMETRY_RX_GPIO_AF);
 #endif
 
   USART_DeInit(TELEMETRY_USART);
@@ -69,7 +69,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode) {
   // OverSampling + IDLE
   TELEMETRY_USART->CR1 |= ( USART_CR1_OVER8 | USART_CR1_IDLEIE );
 
-  GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_TX, TELEMETRY_GPIO_TX_AF);
+  GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_TX, TELEMETRY_TX_GPIO_AF);
 
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;

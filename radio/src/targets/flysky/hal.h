@@ -353,8 +353,8 @@ extern void ISR_TIMER3_CAPT_vect(void);
 #define TELEMETRY_RX_GPIO_PIN           GPIO_Pin_15 // PA.15
 #define TELEMETRY_GPIO_PinSource_TX     GPIO_PinSource5
 #define TELEMETRY_GPIO_PinSource_RX     GPIO_PinSource15
-#define TELEMETRY_GPIO_TX_AF            GPIO_AF_0
-#define TELEMETRY_GPIO_RX_AF            GPIO_AF_1
+#define TELEMETRY_TX_GPIO_AF            GPIO_AF_0
+#define TELEMETRY_RX_GPIO_AF            GPIO_AF_1
 #define TELEMETRY_USART                 USART2
 #define TELEMETRY_DMA_Channel_TX        DMA1_Channel4
 #define TELEMETRY_DMA_TX_IRQn           DMA1_Channel4_5_IRQn
