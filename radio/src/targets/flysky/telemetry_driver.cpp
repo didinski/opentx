@@ -173,9 +173,7 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_TX_FLAG_TC);
     // clear TC flag before enabling interrupt
     TELEMETRY_USART->ISR &= ~USART_ISR_TC;
-#if !defined(CRSF_FULLDUPLEX)
     TELEMETRY_USART->CR1 |= USART_CR1_TCIE;
-#endif
   }
 }
 
