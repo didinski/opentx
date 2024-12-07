@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          python3 ./tools/build-flysky.py -bI6X -tALL $PWD/
+          python3 ./tools/build-flysky.py -bI6X -tDE $PWD/
       - store_artifacts:
           path: output
 
