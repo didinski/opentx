@@ -15,6 +15,8 @@ boards = {
         "PCBI6X_INAV": "YES",
         "DFPLAYER": "NO",
         "USB_SERIAL": "YES",
+        "CRSF_FULLDUPLEX": "YES",
+        "EXTPWR_INVERT": "YES",
     },
     "I6X_DFPLAYER": {
         "HELI": "NO",
