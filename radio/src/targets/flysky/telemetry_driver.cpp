@@ -130,8 +130,10 @@ void telemetryPortSetDirectionOutput() {
 
 void telemetryPortSetDirectionInput() {
   // Disable TX
+#if !defined(CRSF_FULLDUPLEX)
   TELEMETRY_DMA_Channel_TX->CCR &= ~DMA_CCR_EN;
   TELEMETRY_USART->CR1 &= ~USART_CR1_TE;
+#endif
 
   // Enable RX
   TELEMETRY_USART->CR1 |= USART_CR1_RE;
@@ -184,9 +186,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void) {
   // TX, transfer complete
   if ((status & USART_ISR_TC) && (TELEMETRY_USART->CR1 & USART_CR1_TCIE)) {
     TELEMETRY_USART->CR1 &= ~USART_CR1_TCIE;
-#if !defined(CRSF_FULLDUPLEX)
     telemetryPortSetDirectionInput();
-#endif
     while (status & (USART_FLAG_RXNE)) {
       status = TELEMETRY_USART->RDR;
       status = TELEMETRY_USART->ISR;
