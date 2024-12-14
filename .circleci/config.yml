@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          python3 ./tools/build-flysky.py -bI6X_DFPLAYER -tALL $PWD/
+          python3 ./tools/build-flysky.py -bI6X_W -tALL $PWD/
       - store_artifacts:
           path: output
 
