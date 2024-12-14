@@ -17,13 +17,17 @@ boards = {
         "USB_SERIAL": "YES",
         "CRSF_FULLDUPLEX": "YES",
         "EXTPWR_INVERT": "YES",
+        "USB_MSD": "YES",
     },
-    "I6X_DFPLAYER": {
+    "I6X_W": {
         "HELI": "NO",
         "PCBI6X_ELRS": "YES",
-        "PCBI6X_INAV": "YES",
-        "DFPLAYER": "YES",
+        "PCBI6X_INAV": "NO",
+        "DFPLAYER": "NO",
         "USB_SERIAL": "NO",
+        "CRSF_FULLDUPLEX": "YES",
+        "EXTPWR_INVERT": "YES",
+        "CRSF_EXTENDED_TYPES": "YES",
     },
     "I6X_HELI": {
         "HELI": "YES",
@@ -64,7 +68,6 @@ common_options = {
     "LUA_COMPILER": "NO",
     "DISABLE_COMPANION": "YES",
     "PPM_UNIT": "PERCENT_PREC1",
-    "USB_MSD": "YES",
     "SBUS_TRAINER": "NO",
 }
 
