@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          python3 ./tools/build-flysky.py -bI6X_W -tALL $PWD/
+          python3 ./tools/build-flysky.py -bI6X_W -tDE $PWD/
       - store_artifacts:
           path: output
 
@@ -58,6 +58,11 @@ workflows:
     jobs:
       
       - build-std:
+          filters:
+            branches:
+              only:
+                - Duplex
+      - build-std-dfplayer:
           filters:
             branches:
               only:
