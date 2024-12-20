@@ -13,6 +13,8 @@ boards = {
         "HELI": "NO",
         "PCBI6X_INAV": "YES",
         "DFPLAYER": "NO",
+        "CRSF_FULLDUPLEX": "YES",
+        "EXTPWR_INVERT": "YES",
     },
     "I6X_DFPLAYER": {
         "HELI": "NO",
