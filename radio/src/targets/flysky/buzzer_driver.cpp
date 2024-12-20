@@ -330,8 +330,8 @@ void buzzerHeartbeat()
 
   if (buzzerState.duration) {
 
-    if (buzzerState.duration > 10) {
-      buzzerState.duration -= 10; // ms
+    if (buzzerState.duration > 20) {
+      buzzerState.duration -= 20; // ms
 
       if (buzzerState.tone.freqIncr) {
         uint32_t freqChange = BUZZER_BUFFER_DURATION * buzzerState.tone.freqIncr;
