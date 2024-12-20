@@ -341,9 +341,9 @@ void buzzerHeartbeat()
       }
     }
     else {
-      buzzerState.duration = 0;
+      //buzzerState.duration = 0;
 
-      buzzerOff();
+      //buzzerOff();
 
       if (buzzerState.pause) {
         buzzerState.duration = buzzerState.pause;
