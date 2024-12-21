@@ -218,7 +218,10 @@ void audioEvent(unsigned int index)
         playTone(2250, 30, 170, PLAY_REPEAT(1));
         break;
       case AU_SPECIAL_SOUND_RATATA:
-        playTone(BEEP_DEFAULT_FREQ + 1500, 40, 80, PLAY_REPEAT(10));
+        playTone(1318, 80, 100,0);
+        playTone(1046, 80, 120,0);
+        playTone(1318, 80, 100,0);
+        playTone(1046, 80, 120,0);
         break;
       case AU_SPECIAL_SOUND_TICK:
         playTone(BEEP_DEFAULT_FREQ + 1500, 40, 400, PLAY_REPEAT(2));
