@@ -180,7 +180,7 @@ void audioEvent(unsigned int index)
         playTone(BEEP_DEFAULT_FREQ + 750, 40, 80, PLAY_REPEAT(1));
         playTone(BEEP_DEFAULT_FREQ + 750, 40, 20, PLAY_REPEAT(10));
         break;
-      case AU_SPECIAL_SOUND_SCIFI:
+      case AU_SPECIAL_SOUND_MARIO:
         playTone(660, 80, 80,0);
         playTone(660, 80, 230,0);
         playTone(660, 80, 230,0);
@@ -217,7 +217,7 @@ void audioEvent(unsigned int index)
         playTone(1650, 60, 80, PLAY_REPEAT(2));
         playTone(2250, 30, 170, PLAY_REPEAT(1));
         break;
-      case AU_SPECIAL_SOUND_RATATA:
+      case AU_SPECIAL_SOUND_PAUSE:
         playTone(1318, 50, 50);
         playTone(1046, 50, 90);
         playTone(1318, 50, 50);
