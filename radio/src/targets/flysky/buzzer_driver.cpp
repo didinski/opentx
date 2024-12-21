@@ -189,7 +189,7 @@ void audioEvent(unsigned int index)
         playTone(770, 80, 480,0);
         playTone(380, 80, 500,0);
         break;
-      case AU_SPECIAL_SOUND_ROBOT:
+      case AU_SPECIAL_SOUND_LOWBAT:
         playTone(293, 120, 100);
         playTone(277, 80, 100);
         playTone(261, 100, 100);
