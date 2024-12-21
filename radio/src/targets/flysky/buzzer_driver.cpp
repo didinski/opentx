@@ -22,7 +22,7 @@
 #include "buzzer_driver.h"
 
 volatile BuzzerState buzzerState;
-Fifo<BuzzerTone, 4> buzzerFifo;
+Fifo<BuzzerTone, 8> buzzerFifo;
 
 void audioKeyPress()
 {
