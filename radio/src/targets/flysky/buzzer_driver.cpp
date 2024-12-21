@@ -190,9 +190,9 @@ void audioEvent(unsigned int index)
         playTone(380, 80, 500,0);
         break;
       case AU_SPECIAL_SOUND_ROBOT:
-        playTone(2250, 40, 20, PLAY_REPEAT(1));
-        playTone(1650, 120, 20, PLAY_REPEAT(1));
-        playTone(2550, 120, 20, PLAY_REPEAT(1));
+        playTone(293, 120, 100);
+        playTone(277, 80, 100);
+        playTone(261, 100, 100);
         break;
       case AU_SPECIAL_SOUND_CHIRP:
         playTone(BEEP_DEFAULT_FREQ + 1200, 40, 20, PLAY_REPEAT(2));
