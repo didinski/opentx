@@ -77,7 +77,7 @@ static uint16_t bufferOffset = 0;
 static constexpr uint8_t PARAM_DATA_TAIL_SIZE = 44; // max popup packet size
 
 static uint8_t *paramData = &reusableBuffer.cToolData[0];
-static uint8_t paramDataLen = 0;
+static uint32_t paramDataLen = 0;
 
 static constexpr uint8_t PARAMS_MAX_COUNT = 18;
 static constexpr uint8_t PARAMS_SIZE = PARAMS_MAX_COUNT * sizeof(Parameter);
@@ -428,8 +428,8 @@ static bool getSelectedOption(char * option, char * options, const uint8_t value
 }
 
 static void paramTextSelectionDisplay(Parameter * param, uint8_t y, uint8_t attr) {
-  const uint16_t valuesOffset = param->offset + param->nameLength + 2 /* min, max */;
-  uint8_t valuesLen = strlen((char*)&buffer[valuesOffset]);
+  const uint32_t valuesOffset = param->offset + param->nameLength + 2 /* min, max */;
+  const uint32_t valuesLen = strlen((char*)&buffer[valuesOffset]);
   char option[24];
   if (!getSelectedOption(option, (char*)&buffer[valuesOffset], param->value)) {
     option[0] = 'E';

@@ -145,8 +145,10 @@ const uint8_t CROSSFIRE_PERIODS[] = {
 
 #define CRSF_ELRS_MIN_VER(maj, min) \
         (crossfireModuleStatus.isELRS \
-         && crossfireModuleStatus.major >= maj \
-         && crossfireModuleStatus.minor >= min)
+         && crossfireModuleStatus.major >= maj)
+/*       && (crossfireModuleStatus.major > maj \
+          || (crossfireModuleStatus.major == maj \
+           && crossfireModuleStatus.minor >= min))) */
 
 #if !defined(LUA)
 bool crossfireTelemetryPush(uint8_t command, uint8_t *data, uint32_t length);
