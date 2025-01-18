@@ -253,6 +253,184 @@ bool setupPulses(uint8_t port) {
   return send;
 }
 
+
+#if defined(HARDWARE_EXTERNAL_MODULE)
+void enablePulsesExternalModule(uint8_t protocol)
+{
+  // start new protocol hardware here
+
+  switch (protocol) {
+#if defined(CROSSFIRE)
+    case PROTOCOL_CHANNELS_CROSSFIRE:
+      EXTERNAL_MODULE_ON();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
+      break;
+#endif
+
+#if defined(MULTIMODULE)
+    case PROTOCOL_CHANNELS_MULTIMODULE:
+      extmoduleSerialStart();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
+      break;
+#endif
+
+#if defined(SBUS) && !defined(PCBI6X)
+    case PROTOCOL_CHANNELS_SBUS:
+      extmoduleSerialStart();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
+      break;
+#endif
+
+#if defined(PPM)
+    case PROTOCOL_CHANNELS_PPM:
+      extmodulePpmStart();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
+      break;
+#endif
+
+    default:
+      // external module stopped, use default mixer period
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, 0);
+      break;
+  }
+}
+
+bool setupPulsesExternalModule(uint8_t protocol)
+{
+  switch (protocol) {
+#if defined(SBUS) && !defined(PCBI6X)
+    case PROTOCOL_CHANNELS_SBUS:
+      setupPulsesSbus();
+      // SBUS_PERIOD is not a constant! It can be set from UI
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
+      return true;
+#endif
+
+#if defined(CROSSFIRE)
+    case PROTOCOL_CHANNELS_CROSSFIRE:
+    {
+      ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
+      if (status.isValid()) {
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
+      }
+      else
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
+      setupPulsesCrossfire();
+      return true;
+    }
+#endif
+
+#if defined(MULTIMODULE)
+    case PROTOCOL_CHANNELS_MULTIMODULE:
+    {
+      ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
+      if (status.isValid())
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
+      else
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
+      setupPulsesMultiExternalModule();
+      return true;
+    }
+#endif
+
+#if defined(PPM)
+    case PROTOCOL_CHANNELS_PPM:
+      setupPulsesPPMExternalModule();
+      return true;
+#endif
+
+    default:
+      return false;
+  }
+}
+#endif
+
+#if defined(HARDWARE_INTERNAL_MODULE)
+static void enablePulsesInternalModule(uint8_t protocol)
+{
+  // start new protocol hardware here
+
+  switch (protocol) {
+#if defined(AFHDS2A)
+    case PROTOCOL_CHANNELS_AFHDS2A_SPI:
+      init_afhds2a(INTERNAL_MODULE);
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, AFHDS2A_PERIOD);
+    break;
+#endif
+
+    default:
+      // internal module stopped, use default mixer period
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, 0);
+      break;
+  }
+}
+
+bool setupPulsesInternalModule(uint8_t protocol)
+{
+  switch (protocol) {
+
+    default:
+      //mixerSchedulerSetPeriod(INTERNAL_MODULE, 10000 /*us*/); // used for USB sim for example
+      return false;
+  }
+}
+
+void stopPulsesInternalModule()
+{
+  if (moduleState[INTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED) {
+    mixerSchedulerSetPeriod(INTERNAL_MODULE, 0);
+    intmoduleStop();
+    moduleState[INTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  }
+}
+
+bool setupPulsesInternalModule()
+{
+  uint8_t protocol = getRequiredProtocol(INTERNAL_MODULE);
+
+  heartbeat |= (HEART_TIMER_PULSES << INTERNAL_MODULE);
+
+  if (moduleState[INTERNAL_MODULE].protocol != protocol) {
+    intmoduleStop();
+    moduleState[INTERNAL_MODULE].protocol = protocol;
+    enablePulsesInternalModule(protocol);
+    return false;
+  }
+  else {
+    return setupPulsesInternalModule(protocol);
+  }
+}
+#endif
+
+#if defined(HARDWARE_EXTERNAL_MODULE)
+void stopPulsesExternalModule()
+{
+  if (moduleState[EXTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED) {
+    mixerSchedulerSetPeriod(EXTERNAL_MODULE, 0);
+    extmoduleStop();
+    moduleState[EXTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  }
+}
+
+bool setupPulsesExternalModule()
+{
+  uint8_t protocol = getRequiredProtocol(EXTERNAL_MODULE);
+
+  heartbeat |= (HEART_TIMER_PULSES << EXTERNAL_MODULE);
+
+  if (moduleState[EXTERNAL_MODULE].protocol != protocol) {
+    extmoduleStop();
+    moduleState[EXTERNAL_MODULE].protocol = protocol;
+    enablePulsesExternalModule(protocol);
+    setupPulsesExternalModule(protocol);
+    return false;
+  }
+  else {
+    return setupPulsesExternalModule(protocol);
+  }
+}
+#endif
+
 void setCustomFailsafe(uint8_t moduleIndex) {
   if (moduleIndex < NUM_MODULES) {
     for (int ch = 0; ch < MAX_OUTPUT_CHANNELS; ch++) {
