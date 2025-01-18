@@ -36,13 +36,6 @@ void init_afhds2a(uint32_t port) {
   }
 }
 
-void disable_afhds2a(uint32_t port) {
-  if (port == INTERNAL_MODULE) {
-    TRACE("disable_afhds2a");
-    intmoduleStop();
-  }
-}
-
 void init_ppm(uint32_t port) {
   if (port == EXTERNAL_MODULE) {
     TRACE("init_ppm");

@@ -198,7 +198,7 @@ void DisableGIO(void);
 void initAFHDS2A();
 void ActionAFHDS2A();
 void init_afhds2a(uint32_t port);
-void disable_afhds2a(uint32_t port);
+
 #define A7105_CSN_on a7105_csn_on()
 #define A7105_CSN_off a7105_csn_off()
 
