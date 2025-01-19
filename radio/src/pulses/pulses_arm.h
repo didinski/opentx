@@ -174,9 +174,20 @@ inline void startPulses()
 #endif
 }
 
-inline bool pulsesStarted() { return moduleState[0].protocol != 255; }
-inline void pausePulses() { s_pulses_paused = true; }
-inline void resumePulses() { s_pulses_paused = false; }
+inline bool pulsesStarted() 
+{ 
+  return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; 
+}
+
+inline void pausePulses() 
+{ 
+  s_pulses_paused = true; 
+}
+
+inline void resumePulses() 
+{ 
+  s_pulses_paused = false; 
+}
 
 #define SEND_FAILSAFE_NOW(idx) moduleState[idx].counter = 1
 

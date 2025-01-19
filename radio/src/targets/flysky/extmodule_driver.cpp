@@ -22,29 +22,11 @@
 
 void extmoduleSendNextFrame();
 
-//inline void EnablePPMTim(void) {
-//  TRACE("EnablePPMTim");
-//  SET_BIT(EXTMODULE_TIMER->CR1, TIM_CR1_CEN);
-//}
-//inline void DisablePPMTim(void) {
-//  TRACE("DisablePPMTim");
-//  CLEAR_BIT(EXTMODULE_TIMER->CR1, TIM_CR1_CEN);
-//}
-// inline void EnablePPMOut(void) {
-//   TRACE("EnablePPMOut");
-//   SET_BIT(EXTMODULE_TIMER->CCER, TIM_CCER_CC2E);
-// }
-
-inline void DisablePPMOut(void) {
-  TRACE("DisablePPMOut");
-  CLEAR_BIT(EXTMODULE_TIMER->CCER, TIM_CCER_CC2E);
-}
-
 void extmoduleStop() {
   TRACE("extmoduleStop");
-  DisablePPMOut();
+  CLEAR_BIT(EXTMODULE_TIMER->CCER, TIM_CCER_CC2E);
+
   // Keep timer running because PPM IN uses the same one
-  // DisablePPMTim();
   // NVIC_DisableIRQ(EXTMODULE_TIMER_IRQn);
 
   EXTERNAL_MODULE_OFF();
@@ -104,7 +86,8 @@ void extmoduleTimerStart(uint32_t period, uint8_t state) {
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN; // Start counter
 }
 
-void extmodulePpmStart() {
+void extmodulePpmStart() 
+{
   TRACE("extmodulePpmStart");
   /**EXTMODULE_TIMER GPIO Configuration
   PF9   ------> TIM15_CH1
@@ -126,7 +109,8 @@ void extmodulePpmStart() {
   EXTMODULE_TIMER->CCER |= TIM_CCER_CC2E;
 }
 
-inline void extmoduleSendNextFrame() {
+inline void extmoduleSendNextFrame() 
+{
   static bool delay = true;
   static uint16_t delay_halfus = GET_PPM_DELAY(EXTERNAL_MODULE) * 2;
   if (moduleState[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PPM) {

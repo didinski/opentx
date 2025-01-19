@@ -25,7 +25,9 @@
 void intmoduleStop() {
   TRACE("intmoduleStop");
   CLEAR_BIT(INTMODULE_TIMER->CR1, TIM_CR1_CEN);
-  A7105_Sleep();
+
+  if (moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_AFHDS2A_SPI)
+    A7105_Sleep();
 }
 
 void intmoduleAfhds2aPulsesStart(uint16_t periodUs) {
