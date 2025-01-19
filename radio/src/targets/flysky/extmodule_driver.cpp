@@ -34,7 +34,6 @@ void extmoduleStop()
   // NVIC_DisableIRQ(EXTMODULE_TIMER_IRQn);
 }
 
-void extmoduleTimerStart(uint32_t period, uint8_t state) {
 /**
  * EXTMODULE_TIMER is shared between PPM out and PPM in trainer
  * - init is the same.
