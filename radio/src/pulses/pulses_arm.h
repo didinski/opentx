@@ -119,27 +119,58 @@ union TrainerPulsesData {
 extern TrainerPulsesData trainerPulsesData;
 extern const uint16_t CRCTable[];
 
-bool setupPulses(uint8_t module);
-void setupPulsesCrossfire();
+
+#if defined(HARDWARE_INTERNAL_MODULE)
+bool setupPulsesInternalModule();
+void stopPulsesInternalModule();
+#endif
+#if defined(HARDWARE_EXTERNAL_MODULE)
+bool setupPulsesExternalModule();
+void stopPulsesExternalModule();
+#endif
 void setupPulsesDSM2();
-void setupPulsesMultimodule();
+void setupPulsesCrossfire(); // (uint8_t module)
+void setupPulsesGhost();
+void setupPulsesMultiExternalModule();
+void setupPulsesMultiInternalModule();
 void setupPulsesSbus();
+void setupPulsesPPMInternalModule();
 void setupPulsesPPMExternalModule();
 void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
-void sendByteSbus(uint8_t byte);
+void sendByteSbus(uint8_t b);
+void intmodulePpmStart();
+void intmodulePxx1PulsesStart();
+void intmodulePxx1SerialStart();
+void intmoduleAfhds2aStart();
+void extmodulePxx1PulsesStart();
+void extmodulePxx1SerialStart();
+void extmodulePpmStart();
+void intmoduleStop();
+void extmoduleStop();
+void getModuleStatusString(uint8_t moduleIdx, char * statusText);
+void getModuleSyncStatusString(uint8_t moduleIdx, char * statusText);
+#if defined(AFHDS3)
+uint8_t actualAfhdsRunPower(int moduleIndex);
+#endif
+void extramodulePpmStart();
 
-inline void startPulses() {
-//  TRACE_NOCRLF("sP");
+inline void startPulses()
+{
   s_pulses_paused = false;
 
-#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBI6X)
-  setupPulses(INTERNAL_MODULE);
-  setupPulses(EXTERNAL_MODULE);
-#else
-  setupPulses(EXTERNAL_MODULE);
+#if defined(HARDWARE_INTERNAL_MODULE)
+  setupPulsesInternalModule();
+#endif
+
+#if defined(HARDWARE_EXTERNAL_MODULE)
+  setupPulsesExternalModule();
+#endif
+
+#if defined(HARDWARE_EXTRA_MODULE)
+  extramodulePpmStart();
 #endif
 }
 

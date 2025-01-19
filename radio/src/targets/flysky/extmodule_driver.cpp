@@ -43,6 +43,7 @@ inline void DisablePPMOut(void) {
 void extmoduleStop() {
   TRACE("extmoduleStop");
   DisablePPMOut();
+  // Keep timer running because PPM IN uses the same one
   // DisablePPMTim();
   // NVIC_DisableIRQ(EXTMODULE_TIMER_IRQn);
 
@@ -148,7 +149,7 @@ inline void extmoduleSendNextFrame() {
       EXTMODULE_TIMER->CCER = TIM_CCER_CC2E | (GET_PPM_POLARITY(EXTERNAL_MODULE) ? 0 : TIM_CCER_CC2P);
       EXTMODULE_TIMER->CCR2 = EXTMODULE_TIMER->CCR2 + delay_halfus;
       delay_halfus = GET_PPM_DELAY(EXTERNAL_MODULE) * 2;
-      setupPulses(EXTERNAL_MODULE);
+      setupPulsesExternalModule();
     }
     delay = !delay;
 #if defined(CROSSFIRE)
@@ -171,7 +172,7 @@ extern "C" void EXTMODULE_TIMER_IRQHandler() {
         (moduleState[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PPM && g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_PPM) ||
          moduleState[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_NONE ||
          moduleState[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_UNINITIALIZED) {
-      setupPulses(EXTERNAL_MODULE);
+      setupPulsesExternalModule();
     }
     // Only for PPM, CRSF is handled in sendSynchronousPulses
     if (moduleState[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PPM) {

@@ -35,7 +35,8 @@ RTOS_DEFINE_STACK(audioStack, AUDIO_STACK_SIZE);
 RTOS_MUTEX_HANDLE audioMutex;
 RTOS_MUTEX_HANDLE mixerMutex;
 
-void stackPaint() {
+void stackPaint() 
+{
   menusStack.paint();
   mixerStack.paint();
 #if defined(VOICE)
@@ -48,7 +49,8 @@ void stackPaint() {
 
 volatile uint16_t timeForcePowerOffPressed = 0;
 
-bool isForcePowerOffRequested() {
+bool isForcePowerOffRequested() 
+{
   if (pwrOffPressed()) {
     if (timeForcePowerOffPressed == 0) {
       timeForcePowerOffPressed = get_tmr10ms();
@@ -64,21 +66,39 @@ bool isForcePowerOffRequested() {
   return false;
 }
 
-bool isModuleSynchronous(uint8_t moduleIdx) {
+bool isModuleSynchronous(uint8_t moduleIdx) 
+{
   switch (g_model.moduleData[moduleIdx].type) {
     case MODULE_TYPE_CROSSFIRE:
+    case PROTOCOL_CHANNELS_NONE:
+#if defined(MULTIMODULE)
+    case PROTOCOL_CHANNELS_MULTIMODULE:
+#endif
+    case PROTOCOL_CHANNELS_AFHDS2A_SPI: // make AFHDS2A synchronous to make watchdog happy
+    // case PROTOCOL_CHANNELS_SBUS:
       return true;
   }
   return false;
 }
 
-void sendSynchronousPulses(uint8_t runMask) {
-  if ((runMask & (1 << EXTERNAL_MODULE)) && isModuleSynchronous(EXTERNAL_MODULE)) {
-    // Only for CRSF currently (guarded by returned value)
-    if (setupPulses(EXTERNAL_MODULE)) {
-      extmoduleSendNextFrame();
-    }
+void sendSynchronousPulses(uint8_t runMask) 
+{
+#if defined(HARDWARE_INTERNAL_MODULE)
+  if ((runMask & (1 << INTERNAL_MODULE)) && isModuleSynchronous(INTERNAL_MODULE)) {
+    // Updates heartbeat - keep watchdog happy,
+    // for AFHDS2A returns true because return value is used in INTMODULE_TIMER_IRQHandler,
+    // but we don't want intmoduleSendNextFrame for it.
+    if (setupPulsesInternalModule())
+      ;// intmoduleSendNextFrame();
   }
+#endif
+
+#if defined(HARDWARE_EXTERNAL_MODULE)
+  if ((runMask & (1 << EXTERNAL_MODULE)) && isModuleSynchronous(EXTERNAL_MODULE)) {
+    if (setupPulsesExternalModule())
+      extmoduleSendNextFrame();
+  }
+#endif
 }
 
 constexpr uint8_t MIXER_FREQUENT_ACTIONS_PERIOD = 5 /*ms*/;
