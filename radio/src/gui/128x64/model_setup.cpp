@@ -1391,7 +1391,7 @@ void menuModelSetup(event_t event)
   }
 
 #if defined(AFHDS2A)
-  if (IS_RANGECHECK_ENABLE()) {
+  if (isModuleInRangeCheckMode()) {
     showMessageBox("RQly");
     lcdDrawNumber(WARNING_LINE_X, 5*FH, TELEMETRY_RSSI(), BOLD);
   }

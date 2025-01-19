@@ -272,29 +272,6 @@ enum SwashType {
 
 #define TIMER_COUNTDOWN_START(x) (g_model.timers[x].countdownStart > 0 ? 5 : 10 - g_model.timers[x].countdownStart * 10)
 
-enum ChannelsProtocols {
-  PROTOCOL_CHANNELS_UNINITIALIZED,
-  PROTOCOL_CHANNELS_NONE,
-  PROTOCOL_CHANNELS_PPM,
-#if defined(PXX) || defined(DSM2)
-  PROTO_PXX,
-#endif
-#if defined(DSM2)
-  PROTO_DSM2_LP45,
-  PROTO_DSM2_DSM2,
-  PROTO_DSM2_DSMX,
-#endif
-  PROTOCOL_CHANNELS_CROSSFIRE,
-  PROTOCOL_CHANNELS_MULTIMODULE,
-  PROTOCOL_CHANNELS_SBUS,
-#if defined(PXX2)
-  PROTO_PXX2,
-#endif
-#if defined(PCBI6X)
-  PROTOCOL_CHANNELS_AFHDS2A_SPI
-#endif
-};
-
 #if defined(PXX2)
 #define PROTO_PXX_EXTERNAL_MODULE PROTO_PXX2
 #elif defined(PXX)
