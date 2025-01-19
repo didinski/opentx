@@ -251,7 +251,7 @@ inline bool isModuleInRangeCheckMode()
   if (moduleState[0].mode == MODULE_MODE_RANGECHECK)
     return true;
 
-#if NUM_MODULES > 1
+#if NUM_MODULES > 1 && !defined(PCBI6X)
   if (moduleState[1].mode == MODULE_MODE_RANGECHECK)
     return true;
 #endif
