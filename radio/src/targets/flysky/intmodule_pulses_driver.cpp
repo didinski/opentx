@@ -97,7 +97,8 @@ void intmoduleAfhds2aStart() {
 }
 
 // handler for RADIO GIO2 (FALLING AGE)
-extern "C" void EXTI2_3_IRQHandler() {
+extern "C" void EXTI2_3_IRQHandler() 
+{
   if (EXTI->PR & RF_GIO2_PIN) {
     WRITE_REG(EXTI->PR, RF_GIO2_PIN);
     DisableGIO();
@@ -106,7 +107,8 @@ extern "C" void EXTI2_3_IRQHandler() {
   }
 }
 
-extern "C" void INTMODULE_TIMER_IRQHandler() {
+extern "C" void INTMODULE_TIMER_IRQHandler() 
+{
   WRITE_REG(INTMODULE_TIMER->SR, ~(TIM_SR_UIF));  // Clear the update interrupt flag (UIF)
   if (setupPulsesInternalModule()) {
     SETBIT(RadioState, CALLER, TIM_CALL);

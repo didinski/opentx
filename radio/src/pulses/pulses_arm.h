@@ -147,6 +147,7 @@ void intmodulePxx1SerialStart();
 void intmoduleAfhds2aStart();
 void extmodulePxx1PulsesStart();
 void extmodulePxx1SerialStart();
+void extmoduleTimerStart(); // non standard, for shared PPM in/out use
 void extmodulePpmStart();
 void intmoduleStop();
 void extmoduleStop();
