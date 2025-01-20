@@ -9,80 +9,22 @@ jobs:
     steps:
       - checkout
       - run: |
-          python3 ./tools/build-flysky.py -bI6X -tALL $PWD/
+          python3 ./tools/build-flysky.py -bI6X -tDE $PWD/
       - store_artifacts:
           path: output
 
-  build-std-dfplayer:
-    docker:
-      - image: ajjjjjjjj/opentx-docker-i6x:1.4.0
-    steps:
-      - checkout
-      - run: |
-          python3 ./tools/build-flysky.py -bI6X_DFPLAYER -tALL $PWD/
-      - store_artifacts:
-          path: output
-
-  build-heli:
-    docker:
-      - image: ajjjjjjjj/opentx-docker-i6x:1.4.0
-    steps:
-      - checkout
-      - run: |
-          python3 ./tools/build-flysky.py -bI6X_HELI -tALL $PWD/
-      - store_artifacts:
-          path: output
-
-  build-heli-dfplayer:
-    docker:
-      - image: ajjjjjjjj/opentx-docker-i6x:1.4.0
-    steps:
-      - checkout
-      - run: |
-          python3 ./tools/build-flysky.py -bI6X_HELI_DFPLAYER -tALL $PWD/
-      - store_artifacts:
-          path: output
-
-  build-en:
-    docker:
-      - image: ajjjjjjjj/opentx-docker-i6x:1.4.0
-    steps:
-      - checkout
-      - run: |
-          python3 ./tools/build-flysky.py -bI6X_DFPLAYER -bI6X_HELI -bI6X -tEN $PWD/
-      - store_artifacts:
-          path: output
+  
 
 workflows:
   openi6x-release-workflow:
     jobs:
-      - build-en:
-          filters:
-            branches:
-              ignore:
-                - master
-                - /.*-maintenance/
+      
       - build-std:
           filters:
             branches:
               only:
-                - master
-                - /.*-maintenance/
-      - build-std-dfplayer:
-          filters:
-            branches:
-              only:
-                - master
-                - /.*-maintenance/
-      - build-heli:
-          filters:
-            branches:
-              only:
-                - master
-                - /.*-maintenance/
-      - build-heli-dfplayer:
-          filters:
-            branches:
-              only:
-                - master
-                - /.*-maintenance/
+                - pulseref
+            
+      
+      
+      
