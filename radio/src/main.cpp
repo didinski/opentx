@@ -410,7 +410,7 @@ void perMain()
 {
   DEBUG_TIMER_START(debugTimerPerMain1);
 
-#if !defined(PCBI6X)
+#if defined(AUDIO)
   checkSpeakerVolume();
 #endif
 
