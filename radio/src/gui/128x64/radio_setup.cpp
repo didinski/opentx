@@ -40,16 +40,9 @@ int8_t slider_5pos(coord_t y, int8_t value, event_t event, uint8_t attr, const c
   #define CASE_SPLASH_PARAM(x)
 #endif
 
-#if defined(BATTGRAPH)
-  #define CASE_BATTGRAPH(x) x,
-#else
-  #define CASE_BATTGRAPH(x)
-#endif
-
 enum MenuRadioSetupItems {
   CASE_RTCLOCK(ITEM_SETUP_DATE)
   CASE_RTCLOCK(ITEM_SETUP_TIME)
-  CASE_BATTGRAPH(ITEM_SETUP_BATT_RANGE)
   ITEM_SETUP_SOUND_LABEL,
   CASE_AUDIO(ITEM_SETUP_BEEP_MODE)
   CASE_BUZZER(ITEM_SETUP_BUZZER_MODE)
@@ -135,7 +128,7 @@ void menuRadioSetup(event_t event)
 #endif
 
   MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, HEADER_LINE+ITEM_SETUP_MAX, { 
-    HEADER_LINE_COLUMNS CASE_RTCLOCK(2) CASE_RTCLOCK(2) CASE_BATTGRAPH(1) 
+    HEADER_LINE_COLUMNS CASE_RTCLOCK(2) CASE_RTCLOCK(2) 
     LABEL(SOUND), CASE_AUDIO(0)
     CASE_BUZZER(0)
     /*0,*/ 0, 0, 0, CASE_DFPLAYER(0) CASE_AUDIO(0)
@@ -245,21 +238,6 @@ void menuRadioSetup(event_t event)
         }
         if (attr && checkIncDec_Ret) {
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
-        }
-        break;
-#endif
-
-#if defined(BATTGRAPH)
-      case ITEM_SETUP_BATT_RANGE:
-        lcdDrawTextAlignedLeft(y, STR_BATTERY_RANGE);
-        putsVolts(LCD_W-1, y, 120+g_eeGeneral.vBatMax, (menuHorizontalPosition>0 ? attr : 0)|RIGHT|NO_UNIT);
-        lcdDrawChar(lcdLastLeftPos - FW, y, '-');
-        putsVolts(lcdLastLeftPos - FW, y,  90+g_eeGeneral.vBatMin, (menuHorizontalPosition==0 ? attr : 0)|RIGHT|NO_UNIT);
-        if (attr && s_editMode>0) {
-          if (menuHorizontalPosition==0)
-            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
-          else
-            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMax, g_eeGeneral.vBatMin-29, +40); // max=16.0V
         }
         break;
 #endif
