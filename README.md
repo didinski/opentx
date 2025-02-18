@@ -19,13 +19,13 @@ Join our [Discord](https://discord.gg/3vKfYNTVa2), [RCGroups](https://www.rcgrou
 
 ## Comparison
 
-| Feature                   | FlySky i6X | OpenTX i6X                   |
+| Feature                   | FlySky i6X | OpenI6X                      |
 |---------------------------|------------|------------------------------|
 | Channels                  | 6/10       | 16                           |
 | Mixers                    | 3          | 32                           |
 | Models                    | 20         | 16 / unlimited<sup>[1]</sup> |
-| Protocols                 | AFHDS, AFHDS2A, PPM | AFHDS2A + 16Ch modes, PPM, CRSF (CRSFshot)  |
-| Trainer                   | PPM        | SBUS, PPM                    |
+| Protocols                 | AFHDS, AFHDS2A, PPM | AFHDS2A + 16Ch modes, PPM, CRSF |
+| Trainer                   | PPM        | PPM, SBUS                    |
 | Timers                    | _          | ✓                            |
 | Voice annoucements        | _          | ✓<sup>[2]</sup>              |
 | Variometer                | _          | ✓                            |
@@ -33,7 +33,7 @@ Join our [Discord](https://discord.gg/3vKfYNTVa2), [RCGroups](https://www.rcgrou
 | Adjustable screen brightness | _       | ✓<sup>[3]</sup>              |
 | USB Modes                 | Joystick   | Joystick, Storage, Serial (Telemetry mirror, Debug) |
 | AUX Serial port           | _          | ✓ SBUS Trainer, Telemetry mirror, Debug |
-| FlySky FS-HZCZ03-ADJ Digital Gimbal support | _   | ✓<sup>[4]</sup>    |
+| FlySky FS-HZCZ03-ADJ Gimbal support | _   | ✓<sup>[4]</sup>    |
 | Languages                 | EN, CN      | PL, EN, CZ, DE, ES, FI, FR, IT, NL, PT, SE |
 
 <sub>[1] Unlimited by using USB mass storage mode eeprom backup/restore.</sub><br>
